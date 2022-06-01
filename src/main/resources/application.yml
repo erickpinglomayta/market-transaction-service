@@ -1,0 +1,72 @@
+server:
+  port: 8106
+spring:
+  kafka:
+    bootstrap-servers: moped-01.srvs.cloudkafka.com:9094,moped-02.srvs.cloudkafka.com:9094,moped-03.srvs.cloudkafka.com:9094
+    properties:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: SCRAM-SHA-256
+      #  jaas:
+      #    config: org.apache.kafka.common.security.scram.ScramLoginModule required username="ocqfae8u" password="HOj67IdqO8n4wpyzypTUGdGhPWUQn6ED";
+  redis:
+    host: localhost
+    port: 6379
+    #    username: default
+ #   password:
+ #   timeout: 5000
+    
+  cloud:
+    function:
+      definition: saveMarketTrasanction
+    stream:
+      bindings:
+        sendPaymentAccount-out-0:
+          destination: 88m48mpij-markettransaction-account
+          binder: kafka2
+        sendPaymentYanki-out-0:
+          destination:  8m48mpij-markettransaction-yanki
+          binder: kafka2
+        saveMarketTrasanction-in-0:
+          destination: 8m48mpij-marketrequest-markettransaction
+          binder: kafka2     
+      binders:
+        kafka1:
+          type: kafka
+          environment:
+            spring:
+             cloud:
+              stream:
+                kafka:
+                  binder:
+                    bootstrap-servers: moped-01.srvs.cloudkafka.com:9094,moped-02.srvs.cloudkafka.com:9094,moped-03.srvs.cloudkafka.com:9094
+                    configuration:
+                      security:
+                        protocol: SASL_SSL
+                      sasl:
+                        mechanism: SCRAM-SHA-256
+                        jaas:
+                          config:  org.apache.kafka.common.security.scram.ScramLoginModule required username="ocqfae8u" password="HOj67IdqO8n4wpyzypTUGdGhPWUQn6ED";
+
+        kafka2:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+               stream:
+                kafka:
+                 binder:
+                    bootstrap-servers: moped-01.srvs.cloudkafka.com:9094,moped-02.srvs.cloudkafka.com:9094,moped-03.srvs.cloudkafka.com:9094
+                    configuration:
+                      security:
+                        protocol: SASL_SSL
+                      sasl: 
+                        mechanism: SCRAM-SHA-256
+                        jaas:
+                          config: org.apache.kafka.common.security.scram.ScramLoginModule required username="8m48mpij" password="vAaRVki2l0t9wohPGJ5xTDBJIj3PJRWg";
+                          
+  data:
+    mongodb:
+      uri: mongodb+srv://erick:erickpinglo@cluster0.xdfgh.mongodb.net/bank                         
+   
