@@ -28,6 +28,9 @@ spring:
         sendPaymentYanki-out-0:
           destination:  8m48mpij-markettransaction-yanki
           binder: kafka2
+        sendUpdateWalletBootcoin-out-0:
+          destination:  8m48mpij-markettransaction-walletBootcoin
+          binder: kafka2         
         saveMarketTrasanction-in-0:
           destination: 8m48mpij-marketrequest-markettransaction
           binder: kafka2     

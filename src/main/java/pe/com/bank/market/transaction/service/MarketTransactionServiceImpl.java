@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import pe.com.bank.market.transaction.document.MarketTransactionDocument;
 import pe.com.bank.market.transaction.dto.MarketTransactionDTO;
 import pe.com.bank.market.transaction.dto.PaymentDTO;
+import pe.com.bank.market.transaction.dto.WalletBootcoinDTO;
 import pe.com.bank.market.transaction.redis.BuySellRate;
 import pe.com.bank.market.transaction.repository.MarketTransactonRepository;
 import reactor.core.publisher.Flux;
@@ -72,6 +73,8 @@ public class MarketTransactionServiceImpl implements MarketTransactionService {
 			 saveMarketTransaction(new MarketTransactionDocument(null,marketTransactionDTO.getMarketRequestId(),marketTransactionDTO.getAmount(),
 					 marketTransactionDTO.getPaymentType(),marketTransactionDTO.getPaymentNumber(),new Date(),marketTransactionDTO.getBuyerBootcoinWalletId(),
 					 marketTransactionDTO.getSellerBootcoinWalletId())).flatMap( m -> {
+						 sendUpdateWalletBootcoin(new WalletBootcoinDTO(marketTransactionDTO.getSellerBootcoinWalletId(),marketTransactionDTO.getBuyerBootcoinWalletId(),
+								 marketTransactionDTO.getAmount()));
 						 Mono<BuySellRate> buySellRate = getBuySellRate("buySellRate");
 						 return buySellRate.flatMap(buySell ->{						
 							 	if(marketTransactionDTO.getPaymentType().equals("YANKI")) {
@@ -93,5 +96,11 @@ public class MarketTransactionServiceImpl implements MarketTransactionService {
 	 private void sendPaymentYanki(PaymentDTO marketTransactionDTO) {
 		 streamBridge.send("sendPaymentYanki-out-0",marketTransactionDTO);
 	}	
+	 
+	 private void sendUpdateWalletBootcoin(WalletBootcoinDTO walletBootcoinDTO) {
+		 streamBridge.send("sendUpdateWalletBootcoin-out-0",walletBootcoinDTO);
+	}
+	 
+		
 
 }
