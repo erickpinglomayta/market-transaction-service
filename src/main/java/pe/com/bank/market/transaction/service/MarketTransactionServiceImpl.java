@@ -71,16 +71,16 @@ public class MarketTransactionServiceImpl implements MarketTransactionService {
 	 Consumer<MarketTransactionDTO> saveMarketTrasanction() {
 		 return marketTransactionDTO -> {
 			 saveMarketTransaction(new MarketTransactionDocument(null,marketTransactionDTO.getMarketRequestId(),marketTransactionDTO.getAmount(),
-					 marketTransactionDTO.getPaymentType(),marketTransactionDTO.getPaymentNumber(),new Date(),marketTransactionDTO.getBuyerBootcoinWalletId(),
+					 marketTransactionDTO.getSourcePaymentType(),marketTransactionDTO.getSourcePaymentNumber(),new Date(),marketTransactionDTO.getBuyerBootcoinWalletId(),
 					 marketTransactionDTO.getSellerBootcoinWalletId())).flatMap( m -> {
 						 sendUpdateWalletBootcoin(new WalletBootcoinDTO(marketTransactionDTO.getSellerBootcoinWalletId(),marketTransactionDTO.getBuyerBootcoinWalletId(),
 								 marketTransactionDTO.getAmount()));
 						 Mono<BuySellRate> buySellRate = getBuySellRate("buySellRate");
 						 return buySellRate.flatMap(buySell ->{						
-							 	if(marketTransactionDTO.getPaymentType().equals("YANKI")) {
-							 			sendPaymentYanki(new PaymentDTO(marketTransactionDTO.getPaymentNumber(),buySell.getBuyRate(),buySell.getSellRate()));
+							 	if(marketTransactionDTO.getSourcePaymentType().equals("YANKI")) {
+							 			sendPaymentYanki(new PaymentDTO(marketTransactionDTO.getAmount(),marketTransactionDTO.getSourcePaymentNumber(),null,buySell.getBuyRate(),buySell.getSellRate()));
 							 	}else {
-							 			sendPaymentAccount(new PaymentDTO(marketTransactionDTO.getPaymentNumber(),buySell.getBuyRate(),buySell.getSellRate()));
+							 			sendPaymentAccount(new PaymentDTO(marketTransactionDTO.getAmount(),marketTransactionDTO.getSourcePaymentNumber(),null,buySell.getBuyRate(),buySell.getSellRate()));
 							 		}						 
 							 	return Mono.empty();
 						 		});

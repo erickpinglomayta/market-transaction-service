@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentDTO {
 	
-	private Long numberPayment;
+	private Double amount;
+	private Long sourceNumberPayment;
+	private Long destinationNumberPayment;
 	private Double buyRate;
 	private Double sellRate;
 

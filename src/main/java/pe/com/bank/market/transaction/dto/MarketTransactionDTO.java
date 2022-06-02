@@ -14,7 +14,9 @@ public class MarketTransactionDTO {
 	private Double amount;
 	private String buyerBootcoinWalletId;
 	private String sellerBootcoinWalletId;
-	private String paymentType;
-	private Long paymentNumber;		
+	private String sourcePaymentType;
+	private Long sourcePaymentNumber;	
+	private String destinationPaymentType;
+	private Long destinationPaymentNumber;	
 
 }
